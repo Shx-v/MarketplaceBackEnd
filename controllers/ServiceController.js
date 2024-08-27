@@ -236,6 +236,30 @@ const deleteService = async (req, res) => {
   }
 };
 
+const createReview = async (req, res) => {
+  try {
+    const service = await Service.findById(req.params.id);
+    if (!service) return res.status(404).json({ message: "Service not found" });
+
+    const { user, rating, comment } = req.body;
+    const review = {
+      user: user._id,
+      rating,
+      comment,
+    };
+
+    service.reviews.push(review);
+    service.averageRating =
+      service.reviews.reduce((acc, review) => acc + review.rating, 0) /
+      service.reviews.length;
+
+    await service.save();
+    res.status(201).json({ message: "Review added", service });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export {
   createService,
   getAllServices,
@@ -243,4 +267,5 @@ export {
   getServicesByProvider,
   updateService,
   deleteService,
+  createReview,
 };

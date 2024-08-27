@@ -1,5 +1,5 @@
 import express from "express";
-import { verifyToken } from "../verifyToken.js";
+import { verifyToken } from "../middleware/verifyToken.js";
 import {
   createService,
   getAllServices,
@@ -7,6 +7,7 @@ import {
   getServicesByProvider,
   updateService,
   deleteService,
+  createReview,
 } from "../controllers/ServiceController.js";
 
 const router = express.Router();
@@ -17,5 +18,6 @@ router.route("/prov/:id").get(verifyToken, getServicesByProvider);
 router.route("/:id").get(getServiceById);
 router.route("/:id").put(verifyToken, updateService);
 router.route("/:id").delete(verifyToken, deleteService);
+router.route("/review/:id").post(verifyToken, createReview);
 
 export default router;
