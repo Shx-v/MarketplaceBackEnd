@@ -176,6 +176,127 @@ const logout = async (req, res) => {
   }
 };
 
-const forgotPassword = async (req, res) => {};
+const forgotPassword = async (req, res) => {
+  const { email } = req.body;
 
-export { login, register, verify, logout, forgotPassword };
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        EncryptedResponse: {
+          success: false,
+          status_code: 404,
+          message: "User not found",
+        },
+      });
+    }
+
+    const token = jwt.sign({ mail: user.email }, process.env.JWT_SECRET, {
+      expiresIn: "3d",
+    });
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: "ablogpage@gmail.com",
+        pass: "kwur aenx wvge dovl",
+      },
+    });
+
+    const url = `http://localhost:3000/auth/change_password?token=${token}`;
+
+    const mailOptions = {
+      from: "username@gmail.com",
+      to: email,
+      subject: "For Password Change",
+      html: `<p>Hi ${user.firstName}, please click here to <a href=${url}>change</a> your password.</p>`,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+        return res.status(500).json({
+          EncryptedResponse: {
+            success: false,
+            status_code: 500,
+            message: "Failed to send email",
+          },
+        });
+      } else {
+        console.log("Email has been sent: ", info.response);
+      }
+    });
+
+    return res.status(200).json({
+      EncryptedResponse: {
+        success: true,
+        status_code: 200,
+        message: "Password reset link sent successfully",
+      },
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({
+      EncryptedResponse: {
+        success: false,
+        status_code: 500,
+        message: "Internal server error",
+      },
+    });
+  }
+};
+
+const changePassword = async (req, res) => {
+  const { token, password } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const email = decoded.mail;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        EncryptedResponse: {
+          success: false,
+          status_code: 404,
+          message: "User not found",
+          data: null,
+        },
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user.password = hashedPassword;
+    await user.save();
+
+    const userWithoutPassword = {
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
+
+    return res.status(200).json({
+      EncryptedResponse: {
+        success: true,
+        status_code: 200,
+        message: "Password updated successfully",
+        data: {
+          user: userWithoutPassword,
+        },
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      EncryptedResponse: {
+        success: false,
+        status_code: 500,
+        message: "Internal server error",
+      },
+    });
+  }
+};
+
+
+export { login, register, verify, logout, forgotPassword, changePassword };
