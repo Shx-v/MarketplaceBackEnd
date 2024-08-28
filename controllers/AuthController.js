@@ -62,6 +62,17 @@ const login = async (req, res) => {
       });
     }
 
+    if (!user.verified) {
+      return res.status(403).json({
+        EncryptedResponse: {
+          success: false,
+          status_code: 403,
+          message:
+            "User account is not verified. Please verify your account to proceed.",
+        },
+      });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({
@@ -297,6 +308,5 @@ const changePassword = async (req, res) => {
     });
   }
 };
-
 
 export { login, register, verify, logout, forgotPassword, changePassword };

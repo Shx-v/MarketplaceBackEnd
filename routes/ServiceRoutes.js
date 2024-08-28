@@ -1,5 +1,6 @@
 import express from "express";
 import { verifyToken } from "../middleware/verifyToken.js";
+import { upload } from "../middleware/multerUpload.js";
 import {
   createService,
   getAllServices,
@@ -12,7 +13,7 @@ import {
 
 const router = express.Router();
 
-router.route("/").post(verifyToken, createService);
+router.route("/").post(verifyToken,upload.single('image'), createService);
 router.route("/").get(getAllServices);
 router.route("/prov/:id").get(verifyToken, getServicesByProvider);
 router.route("/:id").get(getServiceById);

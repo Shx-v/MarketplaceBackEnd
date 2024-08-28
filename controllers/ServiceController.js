@@ -2,7 +2,7 @@ import Service from "../models/Service.js";
 
 const createService = async (req, res) => {
   try {
-    const { name, provider, description, category, price, features } = req.body;
+    const { name, provider, description, category, price, features, image } = req.body;
 
     if (!name || !description || !category || price == null) {
       return res.status(400).json({
@@ -21,6 +21,7 @@ const createService = async (req, res) => {
       category,
       price,
       features,
+      image
     });
 
     const savedService = await newService.save();
