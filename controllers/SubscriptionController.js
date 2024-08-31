@@ -2,8 +2,7 @@ import Subscription from "../models/Subscription.js";
 
 const createOrder = async (req, res) => {
   try {
-    const { user, service, amount } =
-      req.body;
+    const { user, service, amount } = req.body;
 
     const newSubscription = new Subscription({
       user,
@@ -101,6 +100,35 @@ const getOrderById = async (req, res) => {
   }
 };
 
+const getSubscriptionBySubscriber = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const subscriptions = await Subscription.find({ user: id })
+      .populate("user", "firstName lastName")
+      .populate("service", "name");
+
+    res.status(200).json({
+      EncryptedResponse: {
+        success: true,
+        status_code: 200,
+        message: "Successfully fetched subscriptions !",
+        data: {
+          subscriptions,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching order:", error);
+    res.status(500).json({
+      EncryptedResponse: {
+        success: false,
+        status_code: 500,
+        message: "Server error while fetching subscription.",
+      },
+    });
+  }
+};
+
 const updateOrder = async (req, res) => {
   try {
     const { status, endDate, amount, paymentMethod } = req.body;
@@ -180,4 +208,11 @@ const deleteOrder = async (req, res) => {
   }
 };
 
-export { createOrder, getAllOrders, getOrderById, updateOrder, deleteOrder };
+export {
+  createOrder,
+  getAllOrders,
+  getOrderById,
+  getSubscriptionBySubscriber,
+  updateOrder,
+  deleteOrder,
+};

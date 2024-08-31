@@ -2,7 +2,8 @@ import Service from "../models/Service.js";
 
 const createService = async (req, res) => {
   try {
-    const { name, provider, description, category, price, features, image } = req.body;
+    const { name, provider, description, category, price, features, image } =
+      req.body;
 
     if (!name || !description || !category || price == null) {
       return res.status(400).json({
@@ -21,7 +22,7 @@ const createService = async (req, res) => {
       category,
       price,
       features,
-      image
+      image,
     });
 
     const savedService = await newService.save();
@@ -79,7 +80,10 @@ const getAllServices = async (req, res) => {
 const getServiceById = async (req, res) => {
   try {
     const { id } = req.params;
-    const service = await Service.findById(id);
+    const service = await Service.findById(id).populate({
+      path: "reviews.user",
+      select: "firstName lastName",
+    });
 
     if (!service) {
       return res.status(404).json({
