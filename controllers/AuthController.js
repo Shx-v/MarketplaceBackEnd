@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import * as dotenv from "dotenv";
 import User from "../models/User.js";
 
 const sendVerifyMail = async (name, email, id) => {
@@ -8,8 +9,8 @@ const sendVerifyMail = async (name, email, id) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "ablogpage@gmail.com",
-        pass: "kwur aenx wvge dovl",
+        user: process.env.MAILER_ID,
+        pass: process.env.MAIL_APP_PASS,
       },
     });
 
@@ -209,8 +210,8 @@ const forgotPassword = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "ablogpage@gmail.com",
-        pass: "kwur aenx wvge dovl",
+        user: process.env.MAILER_ID,
+        pass: process.env.MAIL_APP_PASS,
       },
     });
 
