@@ -6,44 +6,25 @@ const orderSchema = new mongoose.Schema({
     ref: "User",
     required: true,
   },
-  service: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Service",
-    required: true,
-  },
-  orderDate: {
-    type: Date,
-    default: Date.now,
-  },
-  status: {
+  services: [
+    {
+      service: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Service",
+        required: true,
+      },
+      quantity: { type: Number, required: true },
+      price: { type: Number, required: true },
+    },
+  ],
+  orderDate: { type: Date, default: Date.now() },
+  orderStatus: {
     type: String,
-    enum: ["Pending", "Completed", "Cancelled"],
+    enum: ["Pending", "Complete", "Cancelled"],
     default: "Pending",
   },
-  amount: {
-    type: Number,
-    required: true,
-    min: 0,
-  },
-  paymentMethod: {
-    type: String,
-    enum: ["Credit Card", "PayPal", "Bank Transfer"],
-    required: true,
-  },
-  transactionId: {
-    type: String,
-    required: true,
-    // unique: true,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
-
-orderSchema.pre("save", function (next) {
-  this.updatedAt = Date.now();
-  next();
+  paymentMethod: { type: String, required: true },
+  totalAmount: { type: Number, required: true },
 });
 
 const Order = mongoose.model("Order", orderSchema);

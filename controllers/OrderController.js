@@ -2,35 +2,31 @@ import Order from "../models/Order.js";
 
 const createOrder = async (req, res) => {
   try {
-    const { user, service, amount, paymentMethod, transactionId } = req.body;
+    const { user, services, paymentMethod, totalAmount } = req.body;
 
     const newOrder = new Order({
       user,
-      service,
-      amount,
+      services,
       paymentMethod,
-      transactionId,
+      totalAmount,
     });
 
-    await newOrder.save();
-
+    const savedOrder = await newOrder.save();
     res.status(201).json({
       EncryptedResponse: {
         success: true,
         status_code: 201,
-        message: "Order created successfully !",
-        data: {
-          order: newOrder,
-        },
+        message: "Order created successfully",
+        data: savedOrder,
       },
     });
   } catch (error) {
-    console.error("Error creating order:", error);
     res.status(500).json({
       EncryptedResponse: {
         success: false,
         status_code: 500,
-        message: "Server error while creating order.",
+        message: "Failed to create order",
+        error: error.message,
       },
     });
   }
@@ -39,26 +35,23 @@ const createOrder = async (req, res) => {
 const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
-      .populate("user", "firstName lastName")
-      .populate("service", "name provider description category price features noOfRating rating createdAt updatedAt");
-
+      .populate("user")
+      .populate("services.service");
     res.status(200).json({
       EncryptedResponse: {
         success: true,
         status_code: 200,
-        message: "Successfully fetched orders !",
-        data: {
-          order: orders,
-        },
+        message: "Orders retrieved successfully",
+        data: orders,
       },
     });
   } catch (error) {
-    console.error("Error fetching orders:", error);
     res.status(500).json({
       EncryptedResponse: {
         success: false,
         status_code: 500,
-        message: "Server error while fetching orders.",
+        message: "Failed to retrieve orders",
+        error: error.message,
       },
     });
   }
@@ -66,16 +59,17 @@ const getAllOrders = async (req, res) => {
 
 const getOrderById = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id)
-      .populate("user", "firstName lastName")
-      .populate("service", "name");
+    const { id } = req.params;
+    const order = await Order.findById(id)
+      .populate("user")
+      .populate("services.service");
 
     if (!order) {
       return res.status(404).json({
         EncryptedResponse: {
           success: false,
           status_code: 404,
-          message: "Order not found.",
+          message: "Order not found",
         },
       });
     }
@@ -84,46 +78,17 @@ const getOrderById = async (req, res) => {
       EncryptedResponse: {
         success: true,
         status_code: 200,
-        message: "Successfully fetched order !",
-        data: {
-          order,
-        },
+        message: "Order retrieved successfully",
+        data: order,
       },
     });
   } catch (error) {
-    console.error("Error fetching order:", error);
     res.status(500).json({
       EncryptedResponse: {
         success: false,
         status_code: 500,
-        message: "Server error while fetching order.",
-      },
-    });
-  }
-};
-
-const getOrderByBuyer = async (req, res) => {
-  const { id } = req.params;
-  try {
-    const orders = await Order.find({ user: id }).populate("service", "name");
-
-    res.status(200).json({
-      EncryptedResponse: {
-        success: true,
-        status_code: 200,
-        message: "Successfully fetched orders !",
-        data: {
-          orders,
-        },
-      },
-    });
-  } catch (error) {
-    console.error("Error fetching order:", error);
-    res.status(500).json({
-      EncryptedResponse: {
-        success: false,
-        status_code: 500,
-        message: "Server error while fetching order.",
+        message: "Failed to retrieve order",
+        error: error.message,
       },
     });
   }
@@ -131,22 +96,18 @@ const getOrderByBuyer = async (req, res) => {
 
 const updateOrder = async (req, res) => {
   try {
-    const { status, amount, paymentMethod } = req.body;
-
-    const updatedOrder = await Order.findByIdAndUpdate(
-      req.params.id,
-      { status, amount, paymentMethod, updatedAt: Date.now() },
-      { new: true }
-    )
-      .populate("user", "firstName lastName")
-      .populate("service", "name");
+    const { id } = req.params;
+    const updatedOrder = await Order.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updatedOrder) {
       return res.status(404).json({
         EncryptedResponse: {
           success: false,
           status_code: 404,
-          message: "Order not found.",
+          message: "Order not found",
         },
       });
     }
@@ -155,19 +116,17 @@ const updateOrder = async (req, res) => {
       EncryptedResponse: {
         success: true,
         status_code: 200,
-        message: "Order updated successfully !",
-        data: {
-          order: updateOrder,
-        },
+        message: "Order updated successfully",
+        data: updatedOrder,
       },
     });
   } catch (error) {
-    console.error("Error updating order:", error);
     res.status(500).json({
       EncryptedResponse: {
         success: false,
         status_code: 500,
-        message: "Server error while updating order.",
+        message: "Failed to update order",
+        error: error.message,
       },
     });
   }
@@ -175,14 +134,15 @@ const updateOrder = async (req, res) => {
 
 const deleteOrder = async (req, res) => {
   try {
-    const deletedOrder = await Order.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+    const deletedOrder = await Order.findByIdAndDelete(id);
 
     if (!deletedOrder) {
       return res.status(404).json({
         EncryptedResponse: {
           success: false,
           status_code: 404,
-          message: "Order not found.",
+          message: "Order not found",
         },
       });
     }
@@ -191,26 +151,19 @@ const deleteOrder = async (req, res) => {
       EncryptedResponse: {
         success: true,
         status_code: 200,
-        message: "Order deleted successfully.",
+        message: "Order deleted successfully",
       },
     });
   } catch (error) {
-    console.error("Error deleting order:", error);
     res.status(500).json({
       EncryptedResponse: {
         success: false,
         status_code: 500,
-        message: "Server error while deleting order.",
+        message: "Failed to delete order",
+        error: error.message,
       },
     });
   }
 };
 
-export {
-  createOrder,
-  getAllOrders,
-  getOrderById,
-  getOrderByBuyer,
-  updateOrder,
-  deleteOrder,
-};
+export { createOrder, getAllOrders, getOrderById, updateOrder, deleteOrder };

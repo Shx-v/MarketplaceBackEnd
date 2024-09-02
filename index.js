@@ -8,9 +8,8 @@ import connectDB from "./mongodb/connect.js";
 import UserRouter from "./routes/UserRoutes.js";
 import AuthRoutes from "./routes/AuthRoutes.js";
 import ServiceRoutes from "./routes/ServiceRoutes.js";
-import OrderRoutes from "./routes/OrderRoutes.js";
-import SubscriptionRoutes from "./routes/SubscriptionRoutes.js";
 import ProviderRoutes from "./routes/ProviderRoutes.js";
+import OrderRoutes from "./routes/OerderRoutes.js";
 import { upload } from "./middleware/multerUpload.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,7 +27,6 @@ app.use("/api/v1/users", UserRouter);
 app.use("/api/v1/providers", ProviderRoutes);
 app.use("/api/v1/services", ServiceRoutes);
 app.use("/api/v1/orders", OrderRoutes);
-app.use("/api/v1/subscriptions", SubscriptionRoutes);
 
 app.post("/api/v1/upload", upload.single("image"), (req, res) => {
   res.status(200).json("Image has been uploaded successfully!");
