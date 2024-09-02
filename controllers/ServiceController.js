@@ -83,7 +83,7 @@ const getServiceById = async (req, res) => {
     const service = await Service.findById(id).populate({
       path: "reviews.user",
       select: "firstName lastName",
-    });
+    }).populate("provider", "name");
 
     if (!service) {
       return res.status(404).json({
