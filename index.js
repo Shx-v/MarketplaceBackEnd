@@ -34,7 +34,7 @@ app.post("/api/v1/upload", upload.single("image"), (req, res) => {
 
 const startServer = async () => {
   try {
-    connectDB(process.env.MONGODB_URL);
+    connectDB('mongodb+srv://shxvdev:marketplace%40shiv123@cluster0.2ajjt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
 
     app.listen(8080, () => console.log("Server started on port 8080"));
   } catch (error) {
