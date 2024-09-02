@@ -10,7 +10,7 @@ import AuthRoutes from "./routes/AuthRoutes.js";
 import ServiceRoutes from "./routes/ServiceRoutes.js";
 import OrderRoutes from "./routes/OrderRoutes.js";
 import SubscriptionRoutes from "./routes/SubscriptionRoutes.js";
-import ProviderRoutes from "./controllers/ProviderController.js";
+import ProviderRoutes from "./routes/ProviderRoutes.js";
 import { upload } from "./middleware/multerUpload.js";
 
 const __filename = fileURLToPath(import.meta.url);
