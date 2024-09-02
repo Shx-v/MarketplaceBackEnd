@@ -11,12 +11,11 @@ const serviceSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
   },
   provider: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    ref: "Provider",
     required: true,
   },
   description: {
