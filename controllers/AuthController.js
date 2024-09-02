@@ -42,7 +42,7 @@ const verify = async (req, res) => {
       { $set: { verified: true } }
     );
 
-    res.redirect("http://localhost:3000/auth/login");
+    res.redirect("https://market-place-frontend-three.vercel.app/auth/login");
   } catch (error) {
     console.log(error.message);
   }
@@ -215,7 +215,7 @@ const forgotPassword = async (req, res) => {
       },
     });
 
-    const url = `http://localhost:3000/auth/change_password?token=${token}`;
+    const url = `https://market-place-frontend-three.vercel.app/auth/change_password?token=${token}`;
 
     const mailOptions = {
       from: "username@gmail.com",
