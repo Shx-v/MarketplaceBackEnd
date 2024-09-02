@@ -54,7 +54,7 @@ const createService = async (req, res) => {
 
 const getAllServices = async (req, res) => {
   try {
-    const services = await Service.find().populate("provider","firstName lastName");
+    const services = await Service.find().populate("provider", "firstName lastName");
     res.status(200).json({
       EncryptedResponse: {
         success: true,
