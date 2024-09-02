@@ -54,15 +54,15 @@ const createService = async (req, res) => {
 
 const getAllServices = async (req, res) => {
   try {
-    const services = await Service.find();
+    // const services = await Service.find().populate("provider","firstName lastName");
     res.status(200).json({
       EncryptedResponse: {
         success: true,
         status_code: 200,
         message: "All services",
-        data: {
-          services,
-        },
+        // data: {
+        //   services,
+        // },
       },
     });
   } catch (error) {

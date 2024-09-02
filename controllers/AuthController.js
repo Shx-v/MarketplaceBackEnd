@@ -10,7 +10,7 @@ const sendVerifyMail = async (name, email, id) => {
       service: "gmail",
       auth: {
         user: process.env.MAILER_ID,
-        pass: process.env.MAIL_APP_PASS,
+        pass: process.env.APP_PASSWORD,
       },
     });
 
