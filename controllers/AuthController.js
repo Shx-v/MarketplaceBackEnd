@@ -9,8 +9,8 @@ const sendVerifyMail = async (name, email, id) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.MAILER_ID,
-        pass: process.env.APP_PASSWORD,
+        user: 'dopegaming1408@gmail.com',
+        pass: 'dqka cwvn jbrm udqb',
       },
     });
 
@@ -85,7 +85,7 @@ const login = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: user._id }, 'marketplacejwtsecret', {
       expiresIn: "3d",
     });
 
@@ -203,15 +203,15 @@ const forgotPassword = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({ mail: user.email }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ mail: user.email }, 'marketplacejwtsecret', {
       expiresIn: "3d",
     });
 
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.MAILER_ID,
-        pass: process.env.MAIL_APP_PASS,
+        user: 'dopegaming1408@gmail.com',
+        pass: 'dqka cwvn jbrm udqb',
       },
     });
 
@@ -262,7 +262,7 @@ const changePassword = async (req, res) => {
   const { token, password } = req.body;
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token,'marketplacejwtsecret');
     const email = decoded.mail;
 
     const user = await User.findOne({ email });
