@@ -45,4 +45,4 @@ providerSchema.pre("save", function (next) {
 
 const Provider = mongoose.model("Provider", providerSchema);
 
-module.exports = Provider;
+export default Provider;
