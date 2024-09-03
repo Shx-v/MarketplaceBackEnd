@@ -14,7 +14,7 @@ const sendVerifyMail = async (name, email, id) => {
       },
     });
 
-    const url = `http://localhost:8080/api/v1/auth/verify?id=${id}`;
+    const url = `https://marketplacebackend-5jv3.onrender.com/api/v1/auth/verify?id=${id}`;
 
     const mailOptions = {
       from: "username@gmail.com",
